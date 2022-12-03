@@ -1,11 +1,11 @@
 var config = {
 	// api请求地址
 	// baseUrl: '{{$baseUrl}}',
-	baseUrl: 'http://niushop.yulongtianzi.com',
+	baseUrl: 'https://niushop.yulongtianzi.com',
 	
 	// 图片域名
 	// imgDomain: '{{$imgDomain}}',
-	imgDomain: 'http://niushop.yulongtianzi.com',
+	imgDomain: 'https://niushop.yulongtianzi.com',
 	
 	// H5端域名
 	h5Domain: '{{$h5Domain}}',
