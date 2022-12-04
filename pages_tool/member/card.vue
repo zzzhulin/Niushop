@@ -1,14 +1,35 @@
 <template>
 	<page-meta :page-style="themeColor"></page-meta>
 	<view class="member-level">
-		<view class="level-top"><image :src="$util.img('public/uniapp/level/card-top-bg.png')"></image></view>
+		<view class="level-top">
+			<image :src="$util.img('public/uniapp/level/card-top-bg.png')"></image>
+		</view>
 		<view class="banner-container">
 			<view class="memberInfo">
-				<image :src="$util.img(userInfo.headimg)" v-if="userInfo.headimg" @error="headimgError" mode="aspectFill"></image>
+				<image :src="$util.img(userInfo.headimg)" v-if="userInfo.headimg" @error="headimgError"
+					mode="aspectFill"></image>
 				<image :src="$util.getDefaultImage().head" v-else mode="aspectFill"></image>
 				<view class="member-desc">
-					<view class="font-size-toolbar">{{ userInfo.nickname }}</view>
-					<view class="font-size-tag expire-time" v-if="userInfo.level_expire_time > 0">有效期至：{{ $util.timeStampTurnTime(userInfo.level_expire_time, true) }}</view>
+					<view class="font-size-toolbar">
+						<text>{{ userInfo.nickname }}</text>
+						<view class="give-btn" @click="$util.redirectTo('/pages_promotion/giftcard/list')">
+							<text class="iconfont icon-fenxiang4"></text>
+							<text>送他们两张PLUS卡</text>
+						</view>
+					</view>
+					<view class="font-size-tag">
+						<view class="expire-time" v-if="userInfo.level_expire_time > 0">
+							有效期至：{{ $util.timeStampTurnTime(userInfo.level_expire_time, true) }}
+						</view>
+						<view class="consume-money">
+							<block v-if="userInfo.consume_spending_num > 0">
+								剩余限额：
+								<text>{{ $lang('common.currencySymbol') }}</text>
+								<text>{{ userInfo.consume_spending_num }}</text>
+							</block>
+							<block v-else><text>畅享不限额</text></block>
+						</view>
+					</view>
 				</view>
 			</view>
 
@@ -20,24 +41,32 @@
 						<view class="level-detail">{{ levelInfo.level_name }}</view>
 						<view class="growr-name">{{ levelInfo.level_name }}可享受消费折扣和</view>
 						<view class="growr-value">会员大礼包等权益</view>
-						<view class="growth-rules font-size-tag" @click="openExplainPopup" v-if="levelInfo.remark != ''">
+						<view class="growth-rules font-size-tag" @click="openExplainPopup"
+							v-if="levelInfo.remark != ''">
 							<text class="iconfont icon-wenhao font-size-tag"></text>
 						</view>
-						<button type="default" class="renew-btn" @click="$util.redirectTo('/pages_tool/member/card_buy')">立即续费</button>
+						<button type="default" class="renew-btn"
+							@click="$util.redirectTo('/pages_tool/member/card_buy')">立即续费</button>
 					</view>
 				</view>
 			</view>
 
-			<view class="card-content" v-if="levelInfo.is_free_shipping || levelInfo.consume_discount < 100 || levelInfo.point_feedback > 0">
+			<view class="card-content"
+				v-if="levelInfo.is_free_shipping || levelInfo.consume_discount < 100 || levelInfo.point_feedback > 0">
 				<view class="card-content-head">
-					<view class="line-box"><view class="line right"></view></view>
+					<view class="line-box">
+						<view class="line right"></view>
+					</view>
 					<view class="card-content-title">会员权益</view>
-					<view class="line-box"><view class="line"></view></view>
+					<view class="line-box">
+						<view class="line"></view>
+					</view>
 					<view class="clear"></view>
 				</view>
 				<view class="card-privilege-list">
 					<view class="card-privilege-item" v-if="levelInfo.is_free_shipping">
-						<view class="card-privilege-icon"><text class="iconfont icon-tedianquanchangbaoyou"></text></view>
+						<view class="card-privilege-icon"><text class="iconfont icon-tedianquanchangbaoyou"></text>
+						</view>
 						<view class="card-privilege-name">全场包邮</view>
 						<view class="card-privilege-text">享受商品包邮服务</view>
 					</view>
@@ -55,9 +84,13 @@
 
 				<view v-if="levelInfo.send_coupon != '' || levelInfo.send_point > 0 || levelInfo.send_balance > 0">
 					<view class="card-content-head">
-						<view class="line-box"><view class="line right"></view></view>
+						<view class="line-box">
+							<view class="line right"></view>
+						</view>
 						<view class="card-content-title">开卡礼包</view>
-						<view class="line-box"><view class="line"></view></view>
+						<view class="line-box">
+							<view class="line"></view>
+						</view>
 						<view class="clear"></view>
 					</view>
 					<view class="card-privilege-list">
@@ -75,6 +108,12 @@
 							<view class="card-privilege-icon"><text class="iconfont icon-youhuiquan1"></text></view>
 							<view class="card-privilege-name">优惠券礼包</view>
 							<view class="card-privilege-text">赠送{{ levelInfo.send_coupon.split(',').length }}张优惠券</view>
+						</view>
+						<view class="card-privilege-item" v-if="userInfo.presented_num > 0">
+							<view class="card-privilege-icon"><text class="iconfont icon-huiyuan"></text></view>
+							<view class="card-privilege-name">会员卡礼包</view>
+							<view class="card-privilege-text">赠送{{ userInfo.presented_num }}张PLUS会员体验卡
+							</view>
 						</view>
 					</view>
 				</view>
@@ -108,133 +147,144 @@
 </template>
 
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue';
-import nsGoodsRecommend from '@/components/ns-goods-recommend/ns-goods-recommend.vue';
-import scroll from '@/common/js/scroll-view.js';
+	import uniPopup from '@/components/uni-popup/uni-popup.vue';
+	import nsGoodsRecommend from '@/components/ns-goods-recommend/ns-goods-recommend.vue';
+	import scroll from '@/common/js/scroll-view.js';
 
-export default {
-	components: {
-		uniPopup,
-		nsGoodsRecommend
-	},
-	mixins: [scroll],
-	data() {
-		return {
-			isSub: false, // 是否已提交
-			isIphoneX: false,
-			levelId: 0,
-			userInfo: {},
-			levelInfo: {
-				bg_color: '#333'
-			}
-		};
-	},
-	computed: {
-		storeToken() {
-			return this.$store.state.token;
-		}
-	},
-	onLoad() {
-		//会员卡
-		this.isIphoneX = this.$util.uniappIsIPhoneX();
-		
-		if (uni.getStorageSync('token')) {
-			this.getMemberInfo();
-		} else {
-			setTimeout(() => {
-				this.$refs.login.open('/pages_tool/member/card');
-			});
-		}
-	},
-	onShow() {},
-	watch: {
-		storeToken: function(nVal, oVal) {
-			if (nVal) {
-				this.getMemberInfo();
-			}
-		}
-	},
-	methods: {
-		getMemberInfo() {
-			this.$api.sendRequest({
-				url: '/api/member/info',
-				success: res => {
-					if (res.code == 0 && res.data) {
-						this.levelId = res.data.member_level;
-						this.userInfo = res.data;
-
-						let levelInfo = res.data.member_level_info;
-						let charge_rule = res.data.charge_rule ? JSON.parse(res.data.charge_rule) : {};
-						levelInfo.charge_rule_arr = [];
-						Object.keys(charge_rule).forEach(key => {
-							levelInfo.charge_rule_arr.push({ key: key, value: charge_rule[key] });
-						});
-						this.levelInfo = levelInfo;
-					} else {
-						this.$util.showToast({
-							title: res.message
-						});
-					}
-					if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
-				},
-				fail: res => {
-					if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
+	export default {
+		components: {
+			uniPopup,
+			nsGoodsRecommend
+		},
+		mixins: [scroll],
+		data() {
+			return {
+				isSub: false, // 是否已提交
+				isIphoneX: false,
+				levelId: 0,
+				userInfo: {},
+				levelInfo: {
+					bg_color: '#333'
 				}
-			});
+			};
 		},
-		headimgError() {
-			this.userInfo.headimg = this.$util.getDefaultImage().head;
+		computed: {
+			storeToken() {
+				return this.$store.state.token;
+			}
 		},
-		/**
-		 * 打开说明弹出层
-		 */
-		openExplainPopup() {
-			this.$refs.explainPopup.open();
+		onLoad() {
+			//会员卡
+			this.isIphoneX = this.$util.uniappIsIPhoneX();
+
+			if (uni.getStorageSync('token')) {
+				this.getMemberInfo();
+			} else {
+				setTimeout(() => {
+					this.$refs.login.open('/pages_tool/member/card');
+				});
+			}
 		},
-		/**
-		 * 打开说明弹出层
-		 */
-		closeExplainPopup() {
-			this.$refs.explainPopup.close();
+		onShow() {},
+		watch: {
+			storeToken: function(nVal, oVal) {
+				if (nVal) {
+					this.getMemberInfo();
+				}
+			}
+		},
+		methods: {
+			getMemberInfo() {
+				this.$api.sendRequest({
+					url: '/api/member/info',
+					success: res => {
+						if (res.code == 0 && res.data) {
+							this.levelId = res.data.member_level;
+							this.userInfo = res.data;
+
+							let levelInfo = res.data.member_level_info;
+							let charge_rule = res.data.charge_rule ? JSON.parse(res.data.charge_rule) : {};
+							levelInfo.charge_rule_arr = [];
+							Object.keys(charge_rule).forEach(key => {
+								levelInfo.charge_rule_arr.push({
+									key: key,
+									value: charge_rule[key]
+								});
+							});
+							this.levelInfo = levelInfo;
+						} else {
+							this.$util.showToast({
+								title: res.message
+							});
+						}
+						if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
+					},
+					fail: res => {
+						if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
+					}
+				});
+			},
+			headimgError() {
+				this.userInfo.headimg = this.$util.getDefaultImage().head;
+			},
+			/**
+			 * 打开说明弹出层
+			 */
+			openExplainPopup() {
+				this.$refs.explainPopup.open();
+			},
+			/**
+			 * 打开说明弹出层
+			 */
+			closeExplainPopup() {
+				this.$refs.explainPopup.close();
+			}
+		},
+		onBackPress(options) {
+			if (options.from === 'navigateBack') {
+				return false;
+			}
+			this.$util.redirectTo('/pages/member/index');
+			return true;
 		}
-	},
-	onBackPress(options) {
-		if (options.from === 'navigateBack') {
-			return false;
-		}
-		this.$util.redirectTo('/pages/member/index');
-		return true;
-	}
-};
+	};
 </script>
 
 <style lang="scss">
-@import './public/css/card.scss';
+	@import './public/css/card.scss';
 
-.banner-container .image-container .slide-image {
-	width: calc(100% - 60rpx);
-	height: 360rpx;
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-}
+	.banner-container .image-container .slide-image {
+		width: calc(100% - 60rpx);
+		height: 360rpx;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+	}
 
-.banner-container .image-container image {
-	background-color: #e3b66b;
-}
+	.banner-container .image-container image {
+		background-color: #e3b66b;
+	}
 
-.banner-container .slide-image .renew-btn {
-	text-align: center;
-	line-height: 56rpx;
-	height: 56rpx;
-	border-radius: $border-radius;
-	width: 160rpx;
-	font-size: $font-size-tag;
-	color: #e3b66b !important;
-	background: #fff;
-	position: absolute;
-	right: 10rpx;
-	bottom: 40rpx;
-	border: none;
-	z-index: 10;
-}
+	.banner-container .slide-image .renew-btn {
+		text-align: center;
+		line-height: 56rpx;
+		height: 56rpx;
+		border-radius: $border-radius;
+		width: 160rpx;
+		font-size: $font-size-tag;
+		color: #e3b66b !important;
+		background: #fff;
+		position: absolute;
+		right: 10rpx;
+		bottom: 40rpx;
+		border: none;
+		z-index: 10;
+	}
+
+	.member-desc {
+		.font-size-tag {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
 </style>

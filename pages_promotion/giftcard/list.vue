@@ -55,7 +55,7 @@
 		</mescroll-uni>
 		
 		<loading-cover ref="loadingCover"></loading-cover>
-		<view class="tab-bar">
+		<!-- <view class="tab-bar">
 			<view class="tabbar-border"></view>
 			<view class="item" v-for="(item, index) in tabList" :key="index" @click="tabRedirectTo(item.link)">
 				<view class="bd">
@@ -68,7 +68,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="tab-bar-placeholder"></view>
+		<view class="tab-bar-placeholder"></view> -->
 		<ns-login ref="login"></ns-login>
 	</view>
 </template>
@@ -83,29 +83,29 @@ export default {
 			dataList: [],
 			status:'all',
 			orderId: 0,
-			tabList:[
-				{
-					'link' : '/pages_promotion/giftcard/index',
-					'text' : '首页',
-					'path' : 'public/uniapp/giftcard/icon-index.png',
-					'selectedPath' : 'public/uniapp/giftcard/icon-index-selected.png',
-					'selected' : false,
-				},
-				{
-					'link' : '/pages_promotion/giftcard/list',
-					'text' : '卡包',
-					'path' : 'public/uniapp/giftcard/icon-card.png',
-					'selectedPath' : 'public/uniapp/giftcard/icon-card-selected.png',
-					'selected' : true,
-				},
-				{
-					'link' : '/pages_promotion/giftcard/member',
-					'text' : '我的',
-					'path' : 'public/uniapp/giftcard/icon-member.png',
-					'selectedPath' : 'public/uniapp/giftcard/icon-member-selected.png',
-					'selected' : false,
-				},
-			]
+			// tabList:[
+			// 	{
+			// 		'link' : '/pages_promotion/giftcard/index',
+			// 		'text' : '首页',
+			// 		'path' : 'public/uniapp/giftcard/icon-index.png',
+			// 		'selectedPath' : 'public/uniapp/giftcard/icon-index-selected.png',
+			// 		'selected' : false,
+			// 	},
+			// 	{
+			// 		'link' : '/pages_promotion/giftcard/list',
+			// 		'text' : '卡包',
+			// 		'path' : 'public/uniapp/giftcard/icon-card.png',
+			// 		'selectedPath' : 'public/uniapp/giftcard/icon-card-selected.png',
+			// 		'selected' : true,
+			// 	},
+			// 	{
+			// 		'link' : '/pages_promotion/giftcard/member',
+			// 		'text' : '我的',
+			// 		'path' : 'public/uniapp/giftcard/icon-member.png',
+			// 		'selectedPath' : 'public/uniapp/giftcard/icon-member-selected.png',
+			// 		'selected' : false,
+			// 	},
+			// ]
 		};
 	},
 	computed: {

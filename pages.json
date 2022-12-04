@@ -679,6 +679,24 @@
 						"navigationBarTitleText": "卡包"
 					}
 
+				},{
+					"path": "giftcard/company",
+					"style": {
+						//#ifdef H5
+						"navigationStyle": "custom",
+						//#endif
+						"navigationBarTitleText": "公司礼品卡"
+					}
+
+				},{
+					"path": "giftcard/emoji",
+					"style": {
+					
+						"navigationStyle": "custom",
+						
+						"navigationBarTitleText": "领取礼品卡"
+					}
+
 				}, {
 					"path": "giftcard/card_info",
 					"style": {
@@ -931,7 +949,7 @@
 						"navigationBarTitleText": "分销商"
 					}
 				}
-			]
+            ]
 		},
 		{
 			//*****************其他模块（26）******************

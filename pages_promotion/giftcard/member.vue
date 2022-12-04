@@ -125,8 +125,8 @@ export default {
 					'selected' : false,
 				},
 				{
-					'link' : '/pages_promotion/giftcard/list',
-					'text' : '卡包',
+					'link' : '/pages_promotion/giftcard/company',
+					'text' : '公司礼品卡',
 					'path' : 'public/uniapp/giftcard/icon-card.png',
 					'selectedPath' : 'public/uniapp/giftcard/icon-card-selected.png',
 					'selected' : false,

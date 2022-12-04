@@ -435,7 +435,8 @@
 					data: {
 						level_id: this.currCard.level_id,
 						// period_unit: this.currCard.charge_rule_arr[this.choiceIndex].key
-						period_unit: this.currCard.charge_rule_arr[this.choiceIndex].rule_type
+						period_unit: this.currCard.charge_rule_arr[this.choiceIndex].rule_type,
+						spec_id: this.currCard.charge_rule_arr[this.choiceIndex].spec_id
 					},
 					success: res => {
 						if (res.data && res.code == 0) {
