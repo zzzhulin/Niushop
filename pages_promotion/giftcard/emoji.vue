@@ -204,6 +204,7 @@
 				this.$refs.notFoundPopup.open();
 			},
 			closeNotFoundPopup() {
+				this.mobile=''
 				this.$refs.notFoundPopup.close();
 			},
 			getData() {
@@ -292,7 +293,7 @@
 					},
 					success: res => {
 						if (res.code >= 0) {
-							this.closePhonePopup();
+							this.$refs.phonePopup.close();
 							if (res.data) {
 								this.openCodePopup();
 							} else {
@@ -328,6 +329,16 @@
 					success: res => {
 						if (res.code >= 0) {
 							this.$util.redirectTo('/pages_promotion/giftcard/list')
+							this.closeCodePopup();
+							this.mobile='';
+							this.code='';
+							clearInterval(this.dynacodeData.timer);
+							this.dynacodeData = {
+								seconds: 120,
+								timer: null,
+								codeText: '获取验证码',
+								isSend: false
+							};
 						} else {
 							this.$util.showToast({
 								title: res.message,

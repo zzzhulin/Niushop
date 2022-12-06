@@ -7,6 +7,7 @@
 		<view class="contact-btn">
 			<button type="primary" open-type="contact">联系客服</button>
 		</view>
+		<view class="tab-bar-placeholder"></view>
 		<loading-cover ref="loadingCover"></loading-cover>
 		<ns-login ref="login"></ns-login>
 	</view>
@@ -64,5 +65,10 @@
 		right: 0;
 		padding: 20rpx 0;
 		background-color: #fff;
+	}
+	.tab-bar-placeholder {
+		width: 100%;
+		padding-bottom: calc(constant(safe-area-inset-bottom) + 130rpx);
+		padding-bottom: calc(env(safe-area-inset-bottom) + 130rpx);
 	}
 </style>

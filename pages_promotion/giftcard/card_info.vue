@@ -79,6 +79,8 @@
 				</view>
 			</uni-popup>
 		</view>
+		<ns-payment ref="choosePaymentPopup" :payMoney="'0.00'"
+			@confirm="toPay" v-if="cardInfo.card_right_type == 'opening'"></ns-payment>
 		
 	</view>
 </template>
@@ -98,6 +100,8 @@ export default {
 			modifyFlag: false,
 			goodsList:[],
 			max:0,
+			isSub: false, // 是否已提交
+			userInfo: {},
 		};
 	},
 	computed: {
@@ -138,6 +142,9 @@ export default {
 					if(res.code >= 0 && res.data){
 						this.cardInfo = res.data;
 						if (this.cardInfo.instruction) this.cardInfo.instruction = htmlParser(this.cardInfo.instruction);
+						if(this.cardInfo.card_right_type == 'opening'){
+							this.getMemberInfo()
+						}
 						
 						this.max = this.cardInfo.card_right_goods_count;
 						if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
@@ -182,6 +189,24 @@ export default {
 				this.max = this.cardInfo.card_right_goods_count;
 			}
 		},
+		getMemberInfo() {
+			this.$api.sendRequest({
+				url: '/api/member/info',
+				success: res => {
+					if (res.data && res.code == 0) {
+						this.userInfo = res.data;
+					} else {
+						this.$util.showToast({
+							title: res.message
+						});
+					}
+					if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
+				},
+				fail: res => {
+					if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
+				}
+			});
+		},
 		useInfo(){
 			uni.showModal({
 				title: '提示',
@@ -196,6 +221,10 @@ export default {
 							this.$util.redirectTo('/pages_tool/member/balance_detail');
 							return false;
 						}
+						if(this.cardInfo.card_right_type == 'opening'){
+							this.$util.redirectTo('/pages_tool/member/card');
+							return false;
+						}
 					}
 				}
 			})
@@ -203,7 +232,7 @@ export default {
 		toUse(){
 			if(this.cardInfo.card_right_type == 'balance'){
 				this.balanceUse();
-			}else{
+			}else if(this.cardInfo.card_right_type == 'goods'){
 				if(this.btnSwitch) return false;
 				
 				let data = {
@@ -223,7 +252,20 @@ export default {
 						this.btnSwitch = false;
 					}
 				});
-				
+			}else{
+				if (this.userInfo.member_level_type && this.userInfo.member_level != this.cardInfo.level_id) {
+					uni.showModal({
+						title: '提示',
+						content: '您有尚未过期的会员卡，再次购卡会覆盖掉之前的卡，是否继续？',
+						success: res => {
+							if (res.confirm) {
+								this.$refs.choosePaymentPopup.open();
+							}
+						}
+					});
+				} else {
+					this.$refs.choosePaymentPopup.open();
+				}
 			}
 		},
 		imageError(index) {
@@ -253,7 +295,36 @@ export default {
 					}
 				}
 			})
-		}
+		},
+		/**
+		 * 提交
+		 */
+		toPay() {
+			if (this.isSub) return;
+			this.isSub = true;
+		
+			this.$api.sendRequest({
+				url: '/supermember/api/ordercreate/create',
+				data: {
+					level_id: this.cardInfo.level_id,
+					// period_unit: this.currCard.charge_rule_arr[this.choiceIndex].key
+					period_unit: this.cardInfo.rule_type,
+					spec_id: this.cardInfo.spec_id
+				},
+				success: res => {
+					if (res.data && res.code == 0) {
+						this.outTradeNo = res.data.out_trade_no;
+						uni.setStorageSync('paySource', 'membercard');
+						this.$refs.choosePaymentPopup.getPayInfo(this.outTradeNo);
+					} else {
+						this.isSub = false;
+						this.$util.showToast({
+							title: res.message
+						});
+					}
+				}
+			});
+		},
 	 
 	}
 };
