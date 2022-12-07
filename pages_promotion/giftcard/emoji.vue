@@ -72,7 +72,7 @@
 			<uni-popup ref="codePopup" type="center">
 				<view class="card-popup-layer popup-layer">
 					<view class="content">
-						<view class="title">是的，有一份礼物待领取</view>
+						<view class="title">是的，有{{card_Num}}份礼物待领取</view>
 						<view class="form">
 							<input class="input" type="number" placeholder-class="input-placeholder"
 								placeholder="输入验证码领取礼品" v-model="code" />
@@ -113,6 +113,7 @@
 				no: 0,
 				giftcard_id: 0,
 				cardInfo: null,
+				card_Num:0,
 				mobile: '',
 				code: '',
 				dynacodeData: {
@@ -294,7 +295,8 @@
 					success: res => {
 						if (res.code >= 0) {
 							this.$refs.phonePopup.close();
-							if (res.data) {
+							if (res.data.status) {
+								this.card_Num = res.data.card_num;
 								this.openCodePopup();
 							} else {
 								this.openNotFoundPopup()

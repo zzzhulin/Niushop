@@ -340,6 +340,9 @@ export default {
 					success: res => {
 						uni.hideLoading();
 						if (res.code >= 0) {
+							if (res.data.pay_success) {
+								return;
+							}
 							var payData = res.data.data;
 							var scene = uni.getStorageSync('is_test') ? 1175 : wx.getLaunchOptionsSync().scene;
 							if([1175, 1176, 1177, 1191, 1195].indexOf(scene) != -1){

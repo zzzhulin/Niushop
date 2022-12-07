@@ -253,7 +253,7 @@ export default {
 					}
 				});
 			}else{
-				if (this.userInfo.member_level_type && this.userInfo.member_level != this.cardInfo.level_id) {
+				if (this.userInfo.member_level_type && this.userInfo.member_level != this.cardInfo.virtual_giftcard.level_id) {
 					uni.showModal({
 						title: '提示',
 						content: '您有尚未过期的会员卡，再次购卡会覆盖掉之前的卡，是否继续？',
@@ -296,6 +296,23 @@ export default {
 				}
 			})
 		},
+		memberCardUse(){
+			this.$api.sendRequest({
+				url: '/giftcard/api/carduse/openinguse',
+				data:{'member_card_id' : this.memberCardId},
+				success: res => {
+					if(res.code >= 0){
+						this.getData();
+						this.openCardPopup();
+					}else{
+						this.$util.showToast({
+							title: res.message,
+						});
+					}
+					
+				}
+			});
+		},
 		/**
 		 * 提交
 		 */
@@ -306,16 +323,20 @@ export default {
 			this.$api.sendRequest({
 				url: '/supermember/api/ordercreate/create',
 				data: {
-					level_id: this.cardInfo.level_id,
+					level_id: this.cardInfo.virtual_giftcard.level_id,
 					// period_unit: this.currCard.charge_rule_arr[this.choiceIndex].key
-					period_unit: this.cardInfo.rule_type,
-					spec_id: this.cardInfo.spec_id
+					period_unit: this.cardInfo.virtual_giftcard.rule_spec_list[0].rule_type,
+					spec_id: this.cardInfo.virtual_giftcard.rule_spec_list[0].spec_id
 				},
 				success: res => {
 					if (res.data && res.code == 0) {
 						this.outTradeNo = res.data.out_trade_no;
 						uni.setStorageSync('paySource', 'membercard');
 						this.$refs.choosePaymentPopup.getPayInfo(this.outTradeNo);
+						setTimeout(() => {
+							this.memberCardUse()
+						}, 100);
+						
 					} else {
 						this.isSub = false;
 						this.$util.showToast({
