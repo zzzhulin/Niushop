@@ -76,7 +76,7 @@
 						<view class="form">
 							<input class="input" type="number" placeholder-class="input-placeholder"
 								placeholder="输入验证码领取礼品" v-model="code" />
-							<view class="dynacode" @click="sendMobileCode">{{ dynacodeData.codeText }}</view>
+							<view class="dynacode" :class="dynacodeData.seconds!=120?'disabled':'enabled'" @click="sendMobileCode">{{ dynacodeData.codeText }}</view>
 						</view>
 					</view>
 					<view class="button-box">
@@ -250,7 +250,7 @@
 							if (this.dynacodeData.seconds == 120 && this.dynacodeData.timer == null) {
 								this.dynacodeData.timer = setInterval(() => {
 									this.dynacodeData.seconds--;
-									this.dynacodeData.codeText = this.dynacodeData.seconds + 's后可重新获取';
+									this.dynacodeData.codeText = '已发送';
 								}, 1000);
 							}
 						} else {
@@ -623,6 +623,13 @@
 					line-height: 48rpx;
 					letter-spacing: 0rpx;
 					color: #FFFFFF;
+				}
+				.dynacode.disabled{
+					background-color: #909399;
+				}
+				
+				.dynacode.enabled{
+					background-color: #EBAB6F;
 				}
 			}
 		}

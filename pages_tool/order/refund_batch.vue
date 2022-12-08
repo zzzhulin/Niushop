@@ -315,5 +315,6 @@ export default {
 .sub-btn{
 	padding-top: 20rpx;
 	background-color: #FFFFFF;
+	z-index: 99;
 }
 </style>

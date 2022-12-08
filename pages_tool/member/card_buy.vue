@@ -25,7 +25,7 @@
 					:next-margin="swiperConfig.nextMargin" @change="swiperChange" @animationfinish="animationfinish"
 					:current="curIndex">
 					<swiper-item :class="levelList.length == 1 ? 'image-container-box' : ''"
-						v-for="(item, i) in levelList" :key="i">
+						v-for="(item, i) in levelList" :key="i" catchtouchmove='catchTouchMove'>
 						<view class="image-container" :class="[
 								curIndex === 0
 									? i === listLen - 1
@@ -281,8 +281,8 @@
 					interval: 3000,
 					duration: 300,
 					circular: false,
-					previousMargin: '58rpx',
-					nextMargin: '58rpx'
+					previousMargin: '0rpx',
+					nextMargin: '0rpx'
 				},
 				levelList: [],
 				levelId: 0,
@@ -352,6 +352,9 @@
 			}
 		},
 		methods: {
+			catchTouchMove(){
+				return false;
+			},
 			swiperChange(e) {
 				let that = this;
 				this.curIndex = e.detail.current;
@@ -384,12 +387,12 @@
 						if (res.data && res.code == 0) {
 							this.levelId = res.data.member_level;
 							this.userInfo = res.data;
-							this.levelList.forEach((v, i) => {
-								if (v.level_id == res.data.member_level) {
-									this.curIndex = i;
-									return;
-								}
-							});
+							// this.levelList.forEach((v, i) => {
+							// 	if (v.level_id == res.data.member_level) {
+							// 		this.curIndex = i;
+							// 		return;
+							// 	}
+							// });
 						} else {
 							this.$util.showToast({
 								title: res.message
