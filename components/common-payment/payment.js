@@ -720,6 +720,17 @@ export default {
 			this.calculate();
 		},
 		/**
+		 * 跳转之前需先进行授权
+		 * @param {Object} url
+		 */
+		redirectBeforeAuth(url) {
+			if (!uni.getStorageSync('token')) {
+				this.$refs.login.open(url);
+			} else {
+				this.$util.redirectTo(url);
+			}
+		},
+		/**
 		 * 使用积分抵扣
 		 */
 		usePoint() {

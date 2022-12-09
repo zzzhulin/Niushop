@@ -300,7 +300,8 @@
 				</view>
 
 				<view class="site-wrap box member-card-wrap" v-if="paymentData.recommend_member_card">
-					<view class="head" @click="selectMemberCard">
+					<!-- <view class="head" @click="selectMemberCard"> -->
+						<view class="head" @click="redirectBeforeAuth('/pages_tool/member/card_buy')">
 						<text class="iconfont icon-huiyuan"></text>
 						<view class="info">
 							开通{{ paymentData.recommend_member_card.level_name }}
@@ -308,7 +309,8 @@
 							<text class="price-color">{{ paymentData.recommend_member_card.discount_money | moneyFormat }}</text>
 							<text>元</text>
 						</view>
-						<text class="iconfont" :class="orderCreateData.is_open_card == 1 ? 'icon-yuan_checked color-base-text' : 'icon-yuan_checkbox'"></text>
+						<!-- <text class="iconfont" :class="orderCreateData.is_open_card == 1 ? 'icon-yuan_checked color-base-text' : 'icon-yuan_checkbox'"></text> -->
+						<view class="btn">开通</view>
 					</view>
 					<view class="body" v-if="orderCreateData.is_open_card">
 						<view
